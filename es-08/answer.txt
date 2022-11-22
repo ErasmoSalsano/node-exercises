@@ -1,0 +1,1 @@
+The content value of the content-type header is: application/json; charset=utf-8
