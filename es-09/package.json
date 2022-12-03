@@ -1,0 +1,18 @@
+{
+  "http.proxySupport": "off",
+  "name": "es-09",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Erasmo Salsano",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.3.1",
+    "supertest": "^6.3.1"
+  },
+  "type": "commonjs"
+
+}
