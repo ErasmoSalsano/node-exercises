@@ -7,11 +7,18 @@ exports.app = void 0;
 // import { PrismaClient } from "@prisma/client";
 const express_1 = __importDefault(require("express"));
 require("express-async-errors");
+const cors_1 = __importDefault(require("cors")); // Per prevenire errori di di richieste cors (cross origin resource sharing)
 const validation_1 = require("./lib/validation");
 const client_1 = __importDefault(require("./lib/prisma/client"));
 // const prisma = new PrismaClient();
 exports.app = (0, express_1.default)();
 exports.app.use(express_1.default.json());
+// Per configurare cors
+const corsOption = {
+    origin: "http://localhost:8080",
+};
+// Per prevenire errori di di richieste cors (cross origin resource sharing), da inserire dopo app.use(express.json()); e prima di ogni path (es. app.get() ecc)
+exports.app.use((0, cors_1.default)(corsOption));
 exports.app.get("/planets", async (req, res) => {
     const planets = await client_1.default.planet.findMany();
     res.json(planets);

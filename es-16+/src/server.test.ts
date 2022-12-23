@@ -6,6 +6,8 @@ import { prismaMock } from "./lib/prisma/client.mock";
 const request = supertest(app);
 
 //GET ALL PLANETS
+// Il describe block permette di raggruppare dei test
+// All'interno dei test annidati si può inserire la descrizione al posto dell'endpoint
 describe("GET /planets", () => {
   test("Valid request", async () => {
     const planets = [
@@ -44,14 +46,14 @@ describe("GET /planets", () => {
     const response = await request
       .get("/planets")
       .expect(200)
-      .expect("Content-Type", /application\/json/);
+      .expect("Content-Type", /application\/json/)
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080"); // Da inserire in tutte le richieste valide per controllare che il cors sia attivo
 
     expect(response.body).toEqual(planets);
   });
 });
 
 //GET PLANET BY ID
-// Il describe block permette di raggruppare dei test
 describe("GET /planets/:id", () => {
   test("Valid request", async () => {
     const planet = {
@@ -70,7 +72,8 @@ describe("GET /planets/:id", () => {
     const response = await request
       .get("/planets/1")
       .expect(200)
-      .expect("Content-Type", /application\/json/);
+      .expect("Content-Type", /application\/json/)
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080"); // Da inserire in tutte le richieste valide per controllare che il cors sia attivo
 
     expect(response.body).toEqual(planet);
   });
@@ -123,7 +126,8 @@ describe("POST /planets", () => {
         moons: 12,
       })
       .expect(201)
-      .expect("Content-Type", /application\/json/);
+      .expect("Content-Type", /application\/json/)
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080"); // Da inserire in tutte le richieste valide per controllare che il cors sia attivo
 
     expect(response.body).toEqual(planet);
   });
@@ -179,7 +183,8 @@ describe("PUT /planets/:id", () => {
         moons: 12,
       })
       .expect(200)
-      .expect("Content-Type", /application\/json/);
+      .expect("Content-Type", /application\/json/)
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080"); // Da inserire in tutte le richieste valide per controllare che il cors sia attivo
 
     expect(response.body).toEqual(planet);
   });
@@ -245,8 +250,10 @@ describe("PUT /planets/:id", () => {
 //DELETE PLANET BY ID
 describe("DELETE /planets/:id", () => {
   test("Valid request", async () => {
-    const response = await request.delete("/planets/1").expect(204);
-    //ci si aspetta come risposta un codice 204(no content), quindi non serve l'header Content-Type
+    const response = await request
+      .delete("/planets/1")
+      .expect(204) //ci si aspetta come risposta un codice 204(no content), quindi non serve l'header Content-Type
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080"); // Da inserire in tutte le richieste valide per controllare che il cors sia attivo
 
     expect(response.text).toEqual("");
   });
