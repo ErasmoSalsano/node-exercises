@@ -4,17 +4,22 @@ import "express-async-errors";
 
 import cors from "cors"; // Per prevenire errori di di richieste cors (cross origin resource sharing)
 
+import { initMulterMiddleware } from "./lib/middleware/multer"; // Per permettere la gestione di richieste multipart/form-data (es upload di file)
+
 import {
   validate,
   planetSchema,
   validationErrorMiddleware,
   PlanetData,
 } from "./lib/validation";
+
 import prisma from "./lib/prisma/client";
 // const prisma = new PrismaClient();
 export const app = express();
 
 app.use(express.json());
+
+const upload = initMulterMiddleware(); // Si inizializza la variabile necessaria alla gestione delle richieste di upload di file (multipart/form-data)
 
 // Per configurare cors
 const corsOption = {
@@ -94,5 +99,26 @@ app.delete("/planets/:id(\\d+)", async (request, response, next) => {
     next(`Cannot DELETE /planets/${planetId}`);
   }
 });
+
+// In questa path si gestisce l'upload di file, in questo caso di foto del pianeta.
+// Per renderlo possibile si utilizza il pacchetto multer (che gestisce multipart/form-data)
+app.post(
+  "/planets/:id(\\d+)/photo",
+  upload.single("photo"), // "photo" nelle parentesi deve coincidere col name dell'input nel form in html
+  async (request, response, next) => {
+    console.log("Request.file", request.file);
+
+    if (!request.file) {
+      //Se il file upload non esiste
+      response.status(400);
+      return next("No photo file uploaded.");
+    }
+
+    // Altrimenti continua
+    const photoFilename = request.file.filename; // Possibile grazie a multer
+
+    response.status(201).json({ photoFilename });
+  }
+);
 
 app.use(validationErrorMiddleware);
