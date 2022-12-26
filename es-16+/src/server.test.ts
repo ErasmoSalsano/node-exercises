@@ -288,11 +288,24 @@ Usa multer memoryStorage, così non vengono scritti file nel disco (in caso di t
 */
 describe("POST /planets/:id/photo", () => {
   test("Valid request with PNG file upload", async () => {
-    const response = await request
+    await request
       .post("/planets/1/photo")
       .attach("photo", "test-fixtures/photos/file.png")
       .expect(201)
       .expect("Access-Control-Allow-Origin", "http://localhost:8080");
+  });
+
+  test("Planet does not exist", async () => {
+    //@ts-ignore
+    prismaMock.planet.update.mockRejectedValue(new Error("Error"));
+
+    const response = await request
+      .post("/planets/23/photo")
+      .attach("photo", "test-fixtures/photos/file.png")
+      .expect(404)
+      .expect("Content-Type", /text\/html/);
+
+    expect(response.text).toContain("Cannot POST /planets/23/photo");
   });
 
   test("Invalid planet ID", async () => {

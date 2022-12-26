@@ -84,8 +84,22 @@ async (request, response, next) => {
         return next("No photo file uploaded.");
     }
     // Altrimenti continua
+    const planetId = Number(request.params.id);
     const photoFilename = request.file.filename; // Possibile grazie a multer
-    response.status(201).json({ photoFilename });
+    try {
+        await client_1.default.planet.update({
+            where: { id: planetId },
+            data: { photoFilename },
+        });
+        response.status(201).json({ photoFilename });
+    }
+    catch (error) {
+        response.status(404);
+        next(`Cannot POST /planets/${planetId}/photo`);
+    }
 });
+// Quando è in questo percorso prende i dati dalla cartella uploads
+// Quindi /planets/photos/file.png fa vedere il file file.png se c'è in uploads
+exports.app.use("/planets/photos", express_1.default.static("uploads"));
 exports.app.use(validation_1.validationErrorMiddleware);
 //# sourceMappingURL=app.js.map
