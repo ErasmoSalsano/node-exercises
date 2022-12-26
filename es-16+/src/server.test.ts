@@ -5,6 +5,8 @@ import { prismaMock } from "./lib/prisma/client.mock";
 
 const request = supertest(app);
 
+//API integration test
+
 //GET ALL PLANETS
 // Il describe block permette di raggruppare dei test
 // All'interno dei test annidati si può inserire la descrizione al posto dell'endpoint
