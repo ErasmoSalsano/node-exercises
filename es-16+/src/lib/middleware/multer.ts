@@ -28,8 +28,31 @@ const storage = multer.diskStorage({
   },
 });
 
+// L'unità di misura è in bytes, quindi per 6 megabytes bisogna moltiplicare
+const MAX_SIZE_IN_MEGABYTES = 6 * 1024 * 1024;
+
+// Qui si crea la variabile coi tipi di file accettabili
+const VALID_MIME_TYPES = ["image/png", "image/jpeg"];
+
+// Qui si crea la funzione che verrà inserita in multerOptions, che controlla il tipo di file
+// e restituisce un errore se non è valido
+const fileFilter: multer.Options["fileFilter"] = (request, file, callback) => {
+  if (VALID_MIME_TYPES.includes(file.mimetype)) {
+    callback(null, true);
+  } else {
+    callback(
+      new Error("Error: The uploaded file must be a JPG or a PNG image.")
+    );
+  }
+};
+
+export const multerOptions = {
+  fileFilter,
+  limits: {
+    fileSize: MAX_SIZE_IN_MEGABYTES,
+  },
+};
+
 export const initMulterMiddleware = () => {
   return multer({ storage, ...multerOptions });
 };
-
-export const multerOptions = {};

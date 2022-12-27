@@ -19,7 +19,13 @@
       method="POST"
       enctype="multipart/form-data"
     >
-      <input type="file" name="photo" />
+      <input
+        type="file"
+        name="photo"
+        accept=".png, image/png, .jpeg, image/jpeg"
+      />
+      <!-- Con l'attributo accept si indicano i tipi di file accettabili,
+        quindi quelli che sarà possibile vedere durente la ricerca tra le cartelle (browse file) -->
       <input type="submit" />
     </form>
   </body>

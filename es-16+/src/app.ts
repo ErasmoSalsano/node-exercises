@@ -106,8 +106,6 @@ app.post(
   "/planets/:id(\\d+)/photo",
   upload.single("photo"), // "photo" nelle parentesi deve coincidere col name dell'input nel form in html
   async (request, response, next) => {
-    console.log("request.file", request.file);
-
     if (!request.file) {
       //Se il file upload non esiste
       response.status(400);
