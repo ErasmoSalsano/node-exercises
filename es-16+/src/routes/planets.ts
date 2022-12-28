@@ -6,7 +6,11 @@ import express, { Router } from "express";
 
 import { initMulterMiddleware } from "../lib/middleware/multer"; // Per permettere la gestione di richieste multipart/form-data (es upload di file)
 
-import { validate, planetSchema, PlanetData } from "../lib/validation";
+import {
+  validate,
+  planetSchema,
+  PlanetData,
+} from "../lib/middleware/validation";
 
 import prisma from "../lib/prisma/client";
 // const prisma = new PrismaClient();
