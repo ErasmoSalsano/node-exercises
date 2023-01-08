@@ -4,6 +4,7 @@ import addFormats from "ajv-formats";
 import { Validator, ValidationError } from "express-json-validator-middleware";
 import { ErrorRequestHandler } from "express";
 
+// Il valore coerceTypes true serve per permettere la conversione ad esempio da stringa (json) a numero, quando richiesto
 const validator = new Validator({
   coerceTypes: true,
 });

@@ -6,8 +6,15 @@ import { validationErrorMiddleware } from "./lib/middleware/validation";
 import { initCorsMiddleware } from "./lib/middleware/cors";
 
 import planetsRoutes from "./routes/planets"; // Qui si importano tutte le routes create in planets.ts sotto router
+import { initSessionMiddleware } from "./lib/middleware/session";
+import { passport } from "./lib/middleware/passport";
 
 export const app = express();
+
+// Questi tre gestiscono l'autenticazione
+app.use(initSessionMiddleware()); // Crea il session middleware
+app.use(passport.initialize()); // Inizializza passport middleware, configurato per l'autenticazione con GitHub
+app.use(passport.session()); // Inizializza session middleware, serializza e deserializza i dati utente dopo l'accesso
 
 app.use(express.json());
 

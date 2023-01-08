@@ -1,5 +1,5 @@
-// Spostando le routes da app a qui si crea router, quindi al posto di app. su userà router.
-// Dato che verrà indicato altrove, si dovrà togliere planets dalle routes
+// Spostando le routes da app a qui si crea router, quindi al posto di app. si userà router.
+// Dato che verrà indicato altrove (nel file app), si dovrà togliere planets dalle routes in questo file
 // Poi planets.ts viene importato in app
 
 import express, { Router } from "express";
