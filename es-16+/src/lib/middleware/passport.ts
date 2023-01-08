@@ -7,12 +7,14 @@
 import passport from "passport";
 import passportGitHub2 from "passport-github2";
 
+import config from "../../config";
+
 // Strategy è il verbo che serve per le diverse forme di autenticazione, in questo caso con GitHub
 const githubStrategy = new passportGitHub2.Strategy(
   {
-    clientID: "",
-    clientSecret: "",
-    callbackURL: "",
+    clientID: config.GITHUB_CLIENT_ID,
+    clientSecret: config.GITHUB_CLIENT_SECRET,
+    callbackURL: config.GITHUB_CALLBACK_URL,
   },
   // In questa funzione si specificano i tipi perchè alcuni di quelli preimpostati nella libreria sono sbagliati
   function (
