@@ -49,8 +49,8 @@ describe("GET /planets", () => {
       .get("/planets")
       .expect(200)
       .expect("Content-Type", /application\/json/)
-      .expect("Access-Control-Allow-Origin", "http://localhost:8080"); // Da inserire in tutte le richieste valide per controllare che il cors sia attivo
-
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080") // Da inserire in tutte le richieste valide per controllare che il cors sia attivo
+      .expect("Access-Control-Allow-Credentials", "true");
     expect(response.body).toEqual(planets);
   });
 });
@@ -75,7 +75,8 @@ describe("GET /planets/:id", () => {
       .get("/planets/1")
       .expect(200)
       .expect("Content-Type", /application\/json/)
-      .expect("Access-Control-Allow-Origin", "http://localhost:8080"); // Da inserire in tutte le richieste valide per controllare che il cors sia attivo
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080") // Da inserire in tutte le richieste valide per controllare che il cors sia attivo
+      .expect("Access-Control-Allow-Credentials", "true");
 
     expect(response.body).toEqual(planet);
   });
@@ -129,7 +130,8 @@ describe("POST /planets", () => {
       })
       .expect(201)
       .expect("Content-Type", /application\/json/)
-      .expect("Access-Control-Allow-Origin", "http://localhost:8080"); // Da inserire in tutte le richieste valide per controllare che il cors sia attivo
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080") // Da inserire in tutte le richieste valide per controllare che il cors sia attivo
+      .expect("Access-Control-Allow-Credentials", "true");
 
     expect(response.body).toEqual(planet);
   });
@@ -186,7 +188,8 @@ describe("PUT /planets/:id", () => {
       })
       .expect(200)
       .expect("Content-Type", /application\/json/)
-      .expect("Access-Control-Allow-Origin", "http://localhost:8080"); // Da inserire in tutte le richieste valide per controllare che il cors sia attivo
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080") // Da inserire in tutte le richieste valide per controllare che il cors sia attivo
+      .expect("Access-Control-Allow-Credentials", "true");
 
     expect(response.body).toEqual(planet);
   });
@@ -255,7 +258,8 @@ describe("DELETE /planets/:id", () => {
     const response = await request
       .delete("/planets/1")
       .expect(204) //ci si aspetta come risposta un codice 204(no content), quindi non serve l'header Content-Type
-      .expect("Access-Control-Allow-Origin", "http://localhost:8080"); // Da inserire in tutte le richieste valide per controllare che il cors sia attivo
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080") // Da inserire in tutte le richieste valide per controllare che il cors sia attivo
+      .expect("Access-Control-Allow-Credentials", "true");
 
     expect(response.text).toEqual("");
   });

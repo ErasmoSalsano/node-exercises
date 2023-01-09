@@ -4,6 +4,7 @@ export function initCorsMiddleware() {
   // Per configurare cors
   const corsOption = {
     origin: "http://localhost:8080",
+    credentials: true,
   };
 
   return cors(corsOption);

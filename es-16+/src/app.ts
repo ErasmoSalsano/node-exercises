@@ -4,10 +4,11 @@ import "express-async-errors";
 
 import { validationErrorMiddleware } from "./lib/middleware/validation";
 import { initCorsMiddleware } from "./lib/middleware/cors";
-
-import planetsRoutes from "./routes/planets"; // Qui si importano tutte le routes create in planets.ts sotto router
 import { initSessionMiddleware } from "./lib/middleware/session";
 import { passport } from "./lib/middleware/passport";
+
+import planetsRoutes from "./routes/planets"; // Qui si importano tutte le routes create in planets.ts sotto router
+import authRoutes from "./routes/auth";
 
 export const app = express();
 
@@ -24,5 +25,7 @@ app.use(initCorsMiddleware());
 // Dopo il cors middleware, altrimenti falliranno tutti i test che richiedono il cors
 // In questo modo si collegano ad app tutte le routes create in planets.ts sotto router e viene indicato che partono tutte con /planets
 app.use("/planets", planetsRoutes);
+// In questo modo si collegano ad app tutte le routes create in auth.ts sotto router e viene indicato che partono tutte con /auth
+app.use("/auth", authRoutes);
 
 app.use(validationErrorMiddleware);
