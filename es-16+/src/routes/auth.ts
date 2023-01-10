@@ -21,7 +21,7 @@ router.get("/login", (request, response, next) => {
 
 // Path per l'autenticazione con GitHub
 router.get(
-  "/auth/github/login",
+  "/github/login",
   passport.authenticate("github", {
     scope: ["user:email"], // Lo scope indica a quali dati vogliamo accedere
   })
@@ -37,7 +37,8 @@ router.get(
     keepSessionInfo: true, // Serve a mantenere i dati della sessione (es. redirectTo)
   }),
   (request, response) => {
-    if (request.session.redirectTo !== "string") {
+    if (typeof request.session.redirectTo !== "string") {
+      console.log("AUTH RIGA 41");
       return response.status(500).end();
     }
 

@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = require("./app");
-require("dotenv/config");
 const config_1 = __importDefault(require("./config"));
 const port = config_1.default.PORT;
 app_1.app.listen(port, () => console.log(`running at localhost:${port}`));

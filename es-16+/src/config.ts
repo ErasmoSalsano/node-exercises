@@ -1,3 +1,4 @@
+import "dotenv/config";
 const missingSetting = "Warning: No value set for this environment variable";
 
 // Session

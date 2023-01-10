@@ -12,6 +12,10 @@ import {
   PlanetData,
 } from "../lib/middleware/validation";
 
+// Per controllare che l'utente sia autenticato
+// Utilizzato nelle routes che modificano il database (creano, aggiornano o eliminano pianeti)
+import { checkAuthorization } from "../lib/middleware/passport";
+
 import prisma from "../lib/prisma/client";
 // const prisma = new PrismaClient();
 
@@ -25,8 +29,10 @@ router.get("/", async (req, res) => {
   res.json(planets);
 });
 
+// Qui si usa prima il middleware checkAuthorization; poi, se lui usa next(), si passa al middlewarw validate
 router.post(
   "/",
+  checkAuthorization,
   validate({ body: planetSchema }),
   async (request, response) => {
     const planetData: PlanetData = request.body;
@@ -57,6 +63,7 @@ router.get("/:id(\\d+)", async (request, response, next) => {
 
 router.put(
   "/:id(\\d+)",
+  checkAuthorization,
   validate({ body: planetSchema }),
   async (request, response, next) => {
     const planetId = Number(request.params.id);
@@ -76,24 +83,29 @@ router.put(
   }
 );
 
-router.delete("/:id(\\d+)", async (request, response, next) => {
-  const planetId = Number(request.params.id);
-  try {
-    await prisma.planet.delete({
-      where: { id: planetId },
-    });
+router.delete(
+  "/:id(\\d+)",
+  checkAuthorization,
+  async (request, response, next) => {
+    const planetId = Number(request.params.id);
+    try {
+      await prisma.planet.delete({
+        where: { id: planetId },
+      });
 
-    response.status(204).end();
-  } catch (error) {
-    response.status(404);
-    next(`Cannot DELETE /planets/${planetId}`);
+      response.status(204).end();
+    } catch (error) {
+      response.status(404);
+      next(`Cannot DELETE /planets/${planetId}`);
+    }
   }
-});
+);
 
 // In questa path si gestisce l'upload di file, in questo caso di foto del pianeta.
 // Per renderlo possibile si utilizza il pacchetto multer (che gestisce multipart/form-data)
 router.post(
   "/:id(\\d+)/photo",
+  checkAuthorization,
   upload.single("photo"), // "photo" nelle parentesi deve coincidere col name dell'input nel form in html
   async (request, response, next) => {
     if (!request.file) {

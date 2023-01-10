@@ -32,6 +32,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importStar(require("express"));
 const multer_1 = require("../lib/middleware/multer"); // Per permettere la gestione di richieste multipart/form-data (es upload di file)
 const validation_1 = require("../lib/middleware/validation");
+// Per controllare che l'utente sia autenticato
+// Utilizzato nelle routes che modificano il database (creano, aggiornano o eliminano pianeti)
+const passport_1 = require("../lib/middleware/passport");
 const client_1 = __importDefault(require("../lib/prisma/client"));
 // const prisma = new PrismaClient();
 const upload = (0, multer_1.initMulterMiddleware)(); // Si inizializza la variabile necessaria alla gestione delle richieste di upload di file (multipart/form-data)
@@ -40,7 +43,8 @@ router.get("/", async (req, res) => {
     const planets = await client_1.default.planet.findMany();
     res.json(planets);
 });
-router.post("/", (0, validation_1.validate)({ body: validation_1.planetSchema }), async (request, response) => {
+// Qui si usa prima il middleware checkAuthorization; poi, se lui usa next(), si passa al middlewarw validate
+router.post("/", passport_1.checkAuthorization, (0, validation_1.validate)({ body: validation_1.planetSchema }), async (request, response) => {
     const planetData = request.body;
     const planet = await client_1.default.planet.create({ data: planetData });
     response.status(201).json(planet);
@@ -60,7 +64,7 @@ router.get("/:id(\\d+)", async (request, response, next) => {
     }
     response.json(planet);
 });
-router.put("/:id(\\d+)", (0, validation_1.validate)({ body: validation_1.planetSchema }), async (request, response, next) => {
+router.put("/:id(\\d+)", passport_1.checkAuthorization, (0, validation_1.validate)({ body: validation_1.planetSchema }), async (request, response, next) => {
     const planetId = Number(request.params.id);
     const planetData = request.body;
     try {
@@ -75,7 +79,7 @@ router.put("/:id(\\d+)", (0, validation_1.validate)({ body: validation_1.planetS
         next(`Cannot PUT /planets/${planetId}`);
     }
 });
-router.delete("/:id(\\d+)", async (request, response, next) => {
+router.delete("/:id(\\d+)", passport_1.checkAuthorization, async (request, response, next) => {
     const planetId = Number(request.params.id);
     try {
         await client_1.default.planet.delete({
@@ -90,7 +94,7 @@ router.delete("/:id(\\d+)", async (request, response, next) => {
 });
 // In questa path si gestisce l'upload di file, in questo caso di foto del pianeta.
 // Per renderlo possibile si utilizza il pacchetto multer (che gestisce multipart/form-data)
-router.post("/:id(\\d+)/photo", upload.single("photo"), // "photo" nelle parentesi deve coincidere col name dell'input nel form in html
+router.post("/:id(\\d+)/photo", passport_1.checkAuthorization, upload.single("photo"), // "photo" nelle parentesi deve coincidere col name dell'input nel form in html
 async (request, response, next) => {
     if (!request.file) {
         //Se il file upload non esiste

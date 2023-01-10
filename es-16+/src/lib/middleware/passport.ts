@@ -6,6 +6,7 @@
 
 import passport from "passport";
 import passportGitHub2 from "passport-github2";
+import { RequestHandler } from "express"; // Per Controllare l'autorizzazione (utente loggato)
 
 import config from "../../config";
 
@@ -41,4 +42,13 @@ passport.serializeUser<Express.User>((user, done) => done(null, user));
 // Con questa invece si recupera l'utente salvato per poterlo usare quando serve
 passport.deserializeUser<Express.User>((user, done) => done(null, user));
 
-export { passport };
+// Questo controlla l'utente sia autenticato
+const checkAuthorization: RequestHandler = (request, response, next) => {
+  if (request.isAuthenticated()) {
+    return next();
+  }
+
+  response.status(401).end();
+};
+
+export { passport, checkAuthorization };
