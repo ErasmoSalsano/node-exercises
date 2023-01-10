@@ -46,7 +46,16 @@ router.get("/", async (req, res) => {
 // Qui si usa prima il middleware checkAuthorization; poi, se lui usa next(), si passa al middlewarw validate
 router.post("/", passport_1.checkAuthorization, (0, validation_1.validate)({ body: validation_1.planetSchema }), async (request, response) => {
     const planetData = request.body;
-    const planet = await client_1.default.planet.create({ data: planetData });
+    // Ovviamente se c'è l'autorizzazione ci sarà l'username (settato da passport nella sessione),
+    // Qui viene recuperato dalla richiesta, per poi aggiungerlo insieme agli altri dati del pianeta
+    const username = request.user?.username;
+    const planet = await client_1.default.planet.create({
+        data: {
+            ...planetData,
+            createdBy: username,
+            updatedBy: username,
+        },
+    });
     response.status(201).json(planet);
 });
 // qui si inserisce una regular expression che indica uno o più caratteri numerici (\\d+)
@@ -67,10 +76,14 @@ router.get("/:id(\\d+)", async (request, response, next) => {
 router.put("/:id(\\d+)", passport_1.checkAuthorization, (0, validation_1.validate)({ body: validation_1.planetSchema }), async (request, response, next) => {
     const planetId = Number(request.params.id);
     const planetData = request.body;
+    const username = request.user?.username;
     try {
         const planet = await client_1.default.planet.update({
             where: { id: planetId },
-            data: planetData,
+            data: {
+                ...planetData,
+                updatedBy: username,
+            },
         });
         response.status(200).json(planet);
     }

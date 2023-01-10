@@ -36,7 +36,16 @@ router.post(
   validate({ body: planetSchema }),
   async (request, response) => {
     const planetData: PlanetData = request.body;
-    const planet = await prisma.planet.create({ data: planetData });
+    // Ovviamente se c'è l'autorizzazione ci sarà l'username (settato da passport nella sessione),
+    // Qui viene recuperato dalla richiesta, per poi aggiungerlo insieme agli altri dati del pianeta
+    const username = request.user?.username as string;
+    const planet = await prisma.planet.create({
+      data: {
+        ...planetData,
+        createdBy: username,
+        updatedBy: username,
+      },
+    });
 
     response.status(201).json(planet);
   }
@@ -68,11 +77,15 @@ router.put(
   async (request, response, next) => {
     const planetId = Number(request.params.id);
     const planetData: PlanetData = request.body;
+    const username = request.user?.username as string;
 
     try {
       const planet = await prisma.planet.update({
         where: { id: planetId },
-        data: planetData,
+        data: {
+          ...planetData,
+          updatedBy: username,
+        },
       });
 
       response.status(200).json(planet);
