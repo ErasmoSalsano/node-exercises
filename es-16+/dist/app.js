@@ -11,6 +11,7 @@ const validation_1 = require("./lib/middleware/validation");
 const cors_1 = require("./lib/middleware/cors");
 const session_1 = require("./lib/middleware/session");
 const passport_1 = require("./lib/middleware/passport");
+const error_1 = require("./lib/middleware/error");
 const planets_1 = __importDefault(require("./routes/planets")); // Qui si importano tutte le routes create in planets.ts sotto router
 const auth_1 = __importDefault(require("./routes/auth"));
 exports.app = (0, express_1.default)();
@@ -26,5 +27,9 @@ exports.app.use((0, cors_1.initCorsMiddleware)());
 exports.app.use("/planets", planets_1.default);
 // In questo modo si collegano ad app tutte le routes create in auth.ts sotto router e viene indicato che partono tutte con /auth
 exports.app.use("/auth", auth_1.default);
+// Se nessuna route corrisponde viene usato questo middleware, per questo è posizionato dopo tutte le path
+exports.app.use(error_1.notFoundMiddleware);
 exports.app.use(validation_1.validationErrorMiddleware);
+// app.get("env") viene da express e restituisce l'ambiente (test, production, ecc)
+exports.app.use((0, error_1.initErrorMiddleware)(exports.app.get("env")));
 //# sourceMappingURL=app.js.map

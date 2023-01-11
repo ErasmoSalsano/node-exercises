@@ -6,6 +6,10 @@ import { validationErrorMiddleware } from "./lib/middleware/validation";
 import { initCorsMiddleware } from "./lib/middleware/cors";
 import { initSessionMiddleware } from "./lib/middleware/session";
 import { passport } from "./lib/middleware/passport";
+import {
+  notFoundMiddleware,
+  initErrorMiddleware,
+} from "./lib/middleware/error";
 
 import planetsRoutes from "./routes/planets"; // Qui si importano tutte le routes create in planets.ts sotto router
 import authRoutes from "./routes/auth";
@@ -27,5 +31,9 @@ app.use(initCorsMiddleware());
 app.use("/planets", planetsRoutes);
 // In questo modo si collegano ad app tutte le routes create in auth.ts sotto router e viene indicato che partono tutte con /auth
 app.use("/auth", authRoutes);
+// Se nessuna route corrisponde viene usato questo middleware, per questo è posizionato dopo tutte le path
+app.use(notFoundMiddleware);
 
 app.use(validationErrorMiddleware);
+// app.get("env") viene da express e restituisce l'ambiente (test, production, ecc)
+app.use(initErrorMiddleware(app.get("env")));

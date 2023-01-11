@@ -88,18 +88,18 @@ describe("GET /planets/:id", () => {
     const response = await request
       .get("/planets/23")
       .expect(404)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(response.text).toContain("Cannot GET /planets/23");
+    expect(response.body.message).toContain("Cannot GET /planets/23");
   });
 
   test("Invalid planet ID", async () => {
     const response = await request
       .get("/planets/qwe")
       .expect(404)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(response.text).toContain("Cannot GET /planets/qwe");
+    expect(response.body.message).toContain("Cannot GET /planets/qwe");
   });
 });
 
@@ -231,9 +231,9 @@ describe("PUT /planets/:id", () => {
         moons: 12,
       })
       .expect(404)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(response.text).toContain("Cannot PUT /planets/23");
+    expect(response.body.message).toContain("Cannot PUT /planets/23");
   });
 
   test("Invalid planet ID", async () => {
@@ -246,22 +246,20 @@ describe("PUT /planets/:id", () => {
         moons: 12,
       })
       .expect(404)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(response.text).toContain("Cannot PUT /planets/qwe");
+    expect(response.body.message).toContain("Cannot PUT /planets/qwe");
   });
 });
 
 //DELETE PLANET BY ID
 describe("DELETE /planets/:id", () => {
   test("Valid request", async () => {
-    const response = await request
+    await request
       .delete("/planets/1")
       .expect(204) //ci si aspetta come risposta un codice 204(no content), quindi non serve l'header Content-Type
       .expect("Access-Control-Allow-Origin", "http://localhost:8080") // Da inserire in tutte le richieste valide per controllare che il cors sia attivo
       .expect("Access-Control-Allow-Credentials", "true");
-
-    expect(response.text).toEqual("");
   });
 
   test("Planet does not exist", async () => {
@@ -271,18 +269,18 @@ describe("DELETE /planets/:id", () => {
     const response = await request
       .delete("/planets/23")
       .expect(404)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(response.text).toContain("Cannot DELETE /planets/23");
+    expect(response.body.message).toContain("Cannot DELETE /planets/23");
   });
 
   test("Invalid planet ID", async () => {
     const response = await request
       .delete("/planets/qwe")
       .expect(404)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(response.text).toContain("Cannot DELETE /planets/qwe");
+    expect(response.body.message).toContain("Cannot DELETE /planets/qwe");
   });
 });
 
@@ -312,9 +310,9 @@ describe("POST /planets/:id/photo", () => {
       .post("/planets/1/photo")
       .attach("photo", "test-fixtures/photos/file.txt")
       .expect(500)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(response.text).toContain(
+    expect(response.body.message).toContain(
       "Error: The uploaded file must be a JPG or a PNG image."
     );
   });
@@ -327,26 +325,26 @@ describe("POST /planets/:id/photo", () => {
       .post("/planets/23/photo")
       .attach("photo", "test-fixtures/photos/file.png")
       .expect(404)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(response.text).toContain("Cannot POST /planets/23/photo");
+    expect(response.body.message).toContain("Cannot POST /planets/23/photo");
   });
 
   test("Invalid planet ID", async () => {
     const response = await request
       .post("/planets/erwe/photo")
       .expect(404)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(response.text).toContain("Cannot POST /planets/erwe/photo");
+    expect(response.body.message).toContain("Cannot POST /planets/erwe/photo");
   });
 
   test("Invalid request with no file upload", async () => {
     const response = await request
       .post("/planets/1/photo")
       .expect(400)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(response.text).toContain("No photo file uploaded.");
+    expect(response.body.message).toContain("No photo file uploaded.");
   });
 });
